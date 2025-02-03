@@ -50,7 +50,11 @@ SMTP_USERNAME=your_email@example.com
 SMTP_PASSWORD="your_app_password"
 RECIPIENT_EMAILS="email1@example.com, email2@example.com"
 COMPANY_NAME="BNS"
-SERVER_NAME="MP-Server-01"''',
+SERVER_NAME="MP-Server-01"
+MYSQL_USER="_macpractice"
+MYSQL_PASSWORD="your_mysql_password"
+MYSQL_HOST="localhost"
+MYSQL_DATABASE="macpractice"''',
 
         project_dir / '.gitignore': '''__pycache__/
 *.pyc
