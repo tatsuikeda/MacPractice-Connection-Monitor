@@ -15,9 +15,11 @@ import signal
 import mysql.connector
 from scapy.all import sniff
 
+# Load environment variables from .env
+load_dotenv()
+
 class MPConnectionMonitor:
     def __init__(self):
-        load_dotenv()
         self.smtp_server = os.getenv('SMTP_SERVER')
         self.smtp_port = int(os.getenv('SMTP_PORT'))
         self.smtp_username = os.getenv('SMTP_USERNAME')
@@ -62,11 +64,7 @@ class MPConnectionMonitor:
     def monitor_connections(self):
         try:
             # Monitor MySQL connections
-            db = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password=os.getenv('MYSQL_PASSWORD')
-            )
+            db = get_db_connection()
             cursor = db.cursor()
             cursor.execute("SHOW PROCESSLIST")
             processes = cursor.fetchall()
@@ -165,6 +163,14 @@ If you received this email, your email configuration is working correctly.
 """
     monitor.send_email(subject, body)
     logging.info("Test email sent")
+
+def get_db_connection():
+    return mysql.connector.connect(
+        host=os.getenv('MYSQL_HOST'),
+        user=os.getenv('MYSQL_USER'),
+        password=os.getenv('MYSQL_PASSWORD'),
+        database=os.getenv('MYSQL_DATABASE')
+    )
 
 def main():
     monitor = MPConnectionMonitor()
