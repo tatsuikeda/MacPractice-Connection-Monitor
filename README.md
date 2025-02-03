@@ -13,12 +13,8 @@ This Python script monitors MacPractice server and client connections by trackin
 git clone https://github.com/tatsuikeda/mp_connection_monitor.git
 cd ~/projects/mp_connection_monitor
 
-# Create and activate virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
+# Run setup script as root
+sudo python3 setup_mp_monitor.py
 ```
 
 ## Features
@@ -33,35 +29,55 @@ pip install -r requirements.txt
 
 ## Configuration
 
-1. Create a `.env` file in the project directory:
+1. Copy `.env.example` to `.env` and configure:
+
+### Email Settings
 ```
 SMTP_SERVER=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USERNAME=your_email@example.com
 SMTP_PASSWORD="your_app_password"
 RECIPIENT_EMAILS="email1@example.com, email2@example.com"
-COMPANY_NAME="Your Practice Name"
+```
+
+### Server Identification
+```
+COMPANY_NAME="BNS"
 SERVER_NAME="MP-Server-01"
 ```
 
-2. Create log directories:
+### Database Settings
+```
+MYSQL_USER="_macpractice"
+MYSQL_PASSWORD="your_mysql_password"
+MYSQL_HOST="localhost"
+MYSQL_DATABASE="macpractice"
+```
+
+2. Set appropriate permissions:
 ```bash
-sudo mkdir -p /var/log/mp_monitor
-sudo touch /var/log/mp_monitor/connection.log
-sudo touch /var/log/mp_monitor/traffic.pcap
-sudo chmod 755 /var/log/mp_monitor
+sudo chmod 600 /usr/local/mp_connection_monitor/.env
+```
+
+## MySQL Setup
+
+Create the monitoring user and grant permissions:
+```sql
+CREATE USER '_macpractice'@'localhost' IDENTIFIED BY 'your_mysql_password';
+GRANT SELECT ON macpractice.* TO '_macpractice'@'localhost';
+FLUSH PRIVILEGES;
 ```
 
 ## Usage
 
 1. Start monitoring:
 ```bash
-sudo .venv/bin/python mp_connection_monitor.py
+sudo /usr/local/mp_connection_monitor/.venv/bin/python /usr/local/mp_connection_monitor/mp_connection_monitor.py
 ```
 
 2. Test email configuration:
 ```bash
-sudo .venv/bin/python mp_connection_monitor.py --test_email
+sudo /usr/local/mp_connection_monitor/.venv/bin/python /usr/local/mp_connection_monitor/mp_connection_monitor.py --test_email
 ```
 
 ## Log Files
